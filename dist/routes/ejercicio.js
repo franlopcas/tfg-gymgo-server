@@ -62,17 +62,19 @@ ejercicioRoutes.post('/new', autentication_1.verificaToken, function (req, res) 
                     mensaje: 'El ejercicio ya se encuentra en el sistema'
                 });
             }
-        });
-        ejercicio_model_1.Ejercicio.create(ejercicio).then(function (ejercicioDB) {
-            res.json({
-                ok: true,
-                ejercicioDB: ejercicioDB
-            });
-        }).catch(function (err) {
-            res.json({
-                ok: false,
-                err: err
-            });
+            else {
+                ejercicio_model_1.Ejercicio.create(ejercicio).then(function (ejercicioDB) {
+                    res.json({
+                        ok: true,
+                        ejercicioDB: ejercicioDB
+                    });
+                }).catch(function (err) {
+                    res.json({
+                        ok: false,
+                        err: err
+                    });
+                });
+            }
         });
         return [2 /*return*/];
     });
@@ -84,16 +86,6 @@ ejercicioRoutes.post('/update-cover', autentication_1.verificaToken, function (r
         ejercicio = req.body;
         cover = fileSystem.coverDeTempHaciaEjercicio();
         ejercicio.cover = cover;
-        ejercicio_model_1.Ejercicio.findOne({ nombre: ejercicio.nombre }, function (err, ejercicioDB) {
-            if (err)
-                throw err;
-            if (ejercicioDB) {
-                return res.json({
-                    ok: false,
-                    mensaje: 'El ejercicio ya se encuentra en el sistema'
-                });
-            }
-        });
         ejercicio_model_1.Ejercicio.findOneAndUpdate({ _id: ejercicio._id }, ejercicio, { new: true }, function (err, ejercicioDB) {
             if (err)
                 throw err;
@@ -116,16 +108,6 @@ ejercicioRoutes.post('/update', autentication_1.verificaToken, function (req, re
     var ejercicio;
     return __generator(this, function (_a) {
         ejercicio = req.body;
-        ejercicio_model_1.Ejercicio.findOne({ nombre: ejercicio.nombre }, function (err, ejercicioDB) {
-            if (err)
-                throw err;
-            if (ejercicioDB) {
-                return res.json({
-                    ok: false,
-                    mensaje: 'El ejercicio ya se encuentra en el sistema'
-                });
-            }
-        });
         ejercicio_model_1.Ejercicio.findOneAndUpdate({ _id: ejercicio._id }, ejercicio, { new: true }, function (err, ejercicioDB) {
             if (err)
                 throw err;
@@ -145,7 +127,6 @@ ejercicioRoutes.post('/update', autentication_1.verificaToken, function (req, re
 }); });
 // Eliminar ejercicio
 ejercicioRoutes.post('/delete', function (req, res) {
-    //const eliminar = req.query.nombre;
     var body = req.body;
     ejercicio_model_1.Ejercicio.findOneAndRemove({ _id: body._id }, function (err, ejercicioDB) {
         if (err)
@@ -153,35 +134,14 @@ ejercicioRoutes.post('/delete', function (req, res) {
         if (!ejercicioDB) {
             return res.json({
                 ok: false,
-                mensaje: 'No existe un ejercicio con ese nombre'
+                mensaje: 'No existe un ejercicio con ese id'
             });
         }
         res.json({
             ok: true
-            //ejercicioDB
         });
     });
 });
-/**
-// Ver ejercicios paginados
-ejercicioRoutes.get('/', async (req: any, res: Response)=>{
-
-    let pagina = Number(req.query.pagina) || 1;
-    let skip = pagina - 1;
-    skip = skip * 10;
-
-    const ejercicios = await Ejercicio.find()
-                                      .sort({_id: -1})
-                                      .skip(skip)
-                                      .limit(10)
-                                      .exec();
-    res.json({
-        ok: true,
-        pagina,
-        ejercicios
-    })
-});
-*/
 //Ver lista de ejercicios
 ejercicioRoutes.get('/', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var ejercicios;
@@ -271,7 +231,7 @@ ejercicioRoutes.post('/uploads', [autentication_1.verificaToken], function (req,
     });
 }); });
 // Servicio para subir la cover
-ejercicioRoutes.post('/upload-cover', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+ejercicioRoutes.post('/upload-cover', autentication_1.verificaToken, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var file;
     return __generator(this, function (_a) {
         switch (_a.label) {

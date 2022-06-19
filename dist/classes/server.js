@@ -7,9 +7,11 @@ var express_1 = __importDefault(require("express"));
 var Server = /** @class */ (function () {
     function Server() {
         this.port = 3000;
+        // Crea una instancia del servidor
         this.app = express_1.default();
     }
     Server.prototype.start = function (callback) {
+        // Hace correr el servidor
         this.app.listen(this.port, callback);
     };
     return Server;

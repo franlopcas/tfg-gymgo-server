@@ -7,7 +7,6 @@ const tablaRoutes = Router();
 // Crear tabla
 tablaRoutes.post('/new', [ verificaToken ], (req: any, res: Response)=>{
     const tabla = req.body;
-    //tabla.usuario = req.usuario._id;
     Tabla.create(tabla).then(tablaDB=>{
         res.json({
             ok: true,
@@ -61,12 +60,6 @@ tablaRoutes.post('/eliminar-ejercicio', [verificaToken], (req: any, res: Respons
 
 // Ver rutinas ( Tablas creadas por el administrador ) NO
 tablaRoutes.get('/ver-rutinas', [verificaToken], async (req: any, res: Response)=>{
-    //const rol = req.usuario.rol;
-    //const usuario = req.usuario;
-    //console.log('El rol del usuario es: ', rol);
-
-    //const rutinas = await Tabla.find({$and: [ {rol: {$in: 'admin'}} ]});
-    //const rutinas = await Tabla.find({$where: function() { return (this.rol == 'admin')}});
     const rutinas = await Tabla.find()
                                .where('usuario.rol').equals('admin')
                                .exec();
@@ -75,32 +68,10 @@ tablaRoutes.get('/ver-rutinas', [verificaToken], async (req: any, res: Response)
         rutinas
     })
 });
-/** 
-// Ver tablas paginadas ( Tablas creadas por el usuario )
-tablaRoutes.get('/', [verificaToken], async (req: any, res: Response)=>{
-    //const userId = req.body.usuario;  // Id del usuario que recibimos por el body
-    const userId = req.usuario._id;
-    
-    let pagina = Number(req.query.pagina) || 1;
-    let skip = pagina - 1;
-    skip = skip * 10;
-
-    const tablas = await Tabla.find({'usuario': userId})
-                              .sort({_id: -1})
-                              .skip(skip)
-                              .limit(10)
-                              .exec();
-    res.json({
-        ok: true,
-        tablas
-    })
-});
-*/
 
 // Ver tablas sin paginar
 tablaRoutes.get('/', [verificaToken], async (req: any, res: Response)=>{
-    //const userId = req.body.usuario;  // Id del usuario que recibimos por el body
-    const userId = req.query._id;
+    const userId = req.query._id; // Id del usuario que recibimos por el body
     const tablas = await Tabla.find({'usuario': userId})
                               .exec();
     res.json({

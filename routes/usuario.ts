@@ -6,13 +6,6 @@ import { verificaToken } from '../middlewares/autentication';
 
 const userRoutes = Router();
 
-userRoutes.get('/prueba',(req: Request, res: Response)=>{
-    res.json({
-        ok: true,
-        mensaje: 'Todo funciona bien'
-    })
-});
-
 // Login
 userRoutes.post('/login', (req: Request, res: Response)=>{
     const body = req.body;
@@ -21,7 +14,7 @@ userRoutes.post('/login', (req: Request, res: Response)=>{
         if(!userDB){
             res.json({
                 ok: false,
-                mensaje: 'Usuario/contraseña no son correctos'
+                mensaje: 'Usuario y/o contraseña no son correctos'
             })
         }
         if(userDB.compararPassword(body.password)){
@@ -39,7 +32,7 @@ userRoutes.post('/login', (req: Request, res: Response)=>{
         }else{
             return res.json({
                 ok: false, 
-                mensaje: 'Usuario/contraseña no son correctos ****'
+                mensaje: 'Usuario y/o contraseña no son correctos'
             })
         }
     })
@@ -61,29 +54,30 @@ userRoutes.post('/create',(req: Request, res: Response)=>{
             if(userDB){
                 return res.json({
                     ok: false,
-                    mensaje: 'El correo electrónico ya se encuentra en el sistema'
+                    mensaje: 'Usuario y/o contraseña no son correctos'
                 });
+            }else{
+                Usuario.create(user).then(userDB=>{
+                    const tokenUser = Token.getJwtToken({
+                        _id: userDB._id,
+                        nombre: userDB.nombre,
+                        email: userDB.email,
+                        avatar: userDB.avatar,
+                        rol: userDB.rol
+                    });
+                    res.json({
+                        ok: true,
+                        token: tokenUser
+                    })
+                }).catch(err =>{
+                    res.json({
+                        ok: false,
+                        err
+                    })
+                })
             }
         });
 
-        Usuario.create(user).then(userDB=>{
-            const tokenUser = Token.getJwtToken({
-                _id: userDB._id,
-                nombre: userDB.nombre,
-                email: userDB.email,
-                avatar: userDB.avatar,
-                rol: userDB.rol
-            });
-            res.json({
-                ok: true,
-                token: tokenUser
-            })
-        }).catch(err =>{
-            res.json({
-                ok: false,
-                err
-            })
-        })
 });
 
 // Actualizar usuario

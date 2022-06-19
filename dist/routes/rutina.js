@@ -57,9 +57,7 @@ rutinaRoutes.post('/new', [autentication_1.verificaToken], function (req, res) {
 });
 // Agregar ejercicio
 rutinaRoutes.post('/agregar-ejercicio', [autentication_1.verificaToken], function (req, res) {
-    var body = req.body;
-    //const _id = req.query._id;
-    //const id = req.body.id; // Recibimos _id de la rutina y el id del ejercicio
+    var body = req.body; // Recoge el _id de la rutina y el id del ejercicio
     rutina_model_1.Rutina.findOneAndUpdate({ _id: body._id }, { $addToSet: { ejercicios: body.id } }, { new: true }, function (err, rutinaDB) {
         if (err)
             throw err;
@@ -78,7 +76,6 @@ rutinaRoutes.post('/agregar-ejercicio', [autentication_1.verificaToken], functio
 // Eliminar ejercicio
 rutinaRoutes.post('/eliminar-ejercicio', [autentication_1.verificaToken], function (req, res) {
     var body = req.body;
-    //const id = req.body.id;
     rutina_model_1.Rutina.findByIdAndUpdate({ _id: body._id }, { $pull: { ejercicios: body.id } }, { new: true }, function (err, rutinaDB) {
         if (err)
             throw err;
@@ -94,24 +91,6 @@ rutinaRoutes.post('/eliminar-ejercicio', [autentication_1.verificaToken], functi
         });
     });
 });
-/**
-// Ver Rutinas paginadas
-rutinaRoutes.get('/', async (req: any, res: Response)=>{
-    let pagina = Number(req.query.pagina) || 1;
-    let skip = pagina - 1;
-    skip = skip * 10;
-
-    const rutinas = await Rutina.find()
-                                .sort({_id: -1})
-                                .skip(skip)
-                                .limit(10)
-                                .exec();
-    res.json({
-        ok: true,
-        rutinas
-    });
-});
- */
 // Ver Rutinas sin paginadas
 rutinaRoutes.get('/', function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var rutinas;

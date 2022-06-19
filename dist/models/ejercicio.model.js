@@ -22,9 +22,6 @@ var ejercicioSchema = new mongoose_1.Schema({
         type: String,
         required: [true, 'La imagen es necesaria']
     },
-    imgs: [{
-            type: String
-        }],
     tipo: {
         type: String,
         required: [true, 'El tipo es necesario']

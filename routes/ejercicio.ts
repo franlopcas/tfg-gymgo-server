@@ -25,20 +25,20 @@ ejercicioRoutes.post('/new',verificaToken, async (req: any, res: Response)=>{
                     ok: false,
                     mensaje: 'El ejercicio ya se encuentra en el sistema'
                 });
+            }else{
+                Ejercicio.create(ejercicio).then(ejercicioDB=>{
+                    res.json({
+                        ok: true,
+                        ejercicioDB
+                    })
+                }).catch(err =>{
+                    res.json({
+                        ok: false,
+                        err
+                    })
+                });
             }
         });
-	
-    Ejercicio.create(ejercicio).then(ejercicioDB=>{
-        res.json({
-            ok: true,
-            ejercicioDB
-        })
-    }).catch(err =>{
-        res.json({
-            ok: false,
-            err
-        })
-    });
 });
 
 // Actualizar ejercicio con COVER
@@ -48,31 +48,21 @@ ejercicioRoutes.post('/update-cover', verificaToken, async (req: any, res: Respo
     const cover = fileSystem.coverDeTempHaciaEjercicio();
     ejercicio.cover = cover;
 
-    Ejercicio.findOne({nombre: ejercicio.nombre}, (err: any, ejercicioDB: any)=>{
-
-        if(err) throw err;
-        if(ejercicioDB){
-            return res.json({
-                ok: false,
-                mensaje: 'El ejercicio ya se encuentra en el sistema'
+            Ejercicio.findOneAndUpdate({_id: ejercicio._id}, ejercicio, {new: true}, (err, ejercicioDB)=>{
+                if(err) throw err;
+                if(!ejercicioDB){
+                    return res.json({
+                        ok: false,
+                        mensaje: 'No existe un ejercicio con ese id'
+                    });
+                }
+                res.json({
+                    ok: true,
+                    ejercicioDB
+                })
+                
             });
-        }
-    });
-         
-    Ejercicio.findOneAndUpdate({_id: ejercicio._id}, ejercicio, {new: true}, (err, ejercicioDB)=>{
-        if(err) throw err;
-        if(!ejercicioDB){
-            return res.json({
-                ok: false,
-                mensaje: 'No existe un ejercicio con ese id'
-            });
-        }
-        res.json({
-            ok: true,
-            ejercicioDB
-        })
         
-    });
 });
 
 // Actualizar ejercicio SIN COVER
@@ -80,18 +70,27 @@ ejercicioRoutes.post('/update', verificaToken, async (req: any, res: Response)=>
 
     const ejercicio = req.body;
 
-    Ejercicio.findOne({nombre: ejercicio.nombre}, (err: any, ejercicioDB: any)=>{
-
-        if(err) throw err;
-        if(ejercicioDB){
-            return res.json({
-                ok: false,
-                mensaje: 'El ejercicio ya se encuentra en el sistema'
+            Ejercicio.findOneAndUpdate({_id: ejercicio._id}, ejercicio, {new: true}, (err, ejercicioDB)=>{
+                if(err) throw err;
+                if(!ejercicioDB){
+                    return res.json({
+                        ok: false,
+                        mensaje: 'No existe un ejercicio con ese id'
+                    });
+                }
+                res.json({
+                    ok: true,
+                    ejercicioDB
+                })
+                
             });
-        }
-    });
-         
-    Ejercicio.findOneAndUpdate({_id: ejercicio._id}, ejercicio, {new: true}, (err, ejercicioDB)=>{
+        
+});
+
+// Eliminar ejercicio
+ejercicioRoutes.post('/delete', (req: any, res: Response)=>{
+	const body = req.body;
+    Ejercicio.findOneAndRemove({_id: body._id}, (err: any, ejercicioDB: any)=>{
         if(err) throw err;
         if(!ejercicioDB){
             return res.json({
@@ -100,52 +99,10 @@ ejercicioRoutes.post('/update', verificaToken, async (req: any, res: Response)=>
             });
         }
         res.json({
-            ok: true,
-            ejercicioDB
-        })
-        
-    });
-});
-
-// Eliminar ejercicio
-ejercicioRoutes.post('/delete', (req: any, res: Response)=>{
-	//const eliminar = req.query.nombre;
-	const body = req.body;
-    Ejercicio.findOneAndRemove({_id: body._id}, (err: any, ejercicioDB: any)=>{
-        if(err) throw err;
-        if(!ejercicioDB){
-            return res.json({
-                ok: false,
-                mensaje: 'No existe un ejercicio con ese nombre'
-            });
-        }
-        res.json({
             ok: true
-            //ejercicioDB
         })
     });
 });
-
-/** 
-// Ver ejercicios paginados
-ejercicioRoutes.get('/', async (req: any, res: Response)=>{
-
-    let pagina = Number(req.query.pagina) || 1;
-    let skip = pagina - 1;
-    skip = skip * 10;
-
-    const ejercicios = await Ejercicio.find()
-                                      .sort({_id: -1})
-                                      .skip(skip)
-                                      .limit(10)
-                                      .exec();
-    res.json({
-        ok: true,
-        pagina,
-        ejercicios
-    })
-});
-*/
 
 //Ver lista de ejercicios
 ejercicioRoutes.get('/', async (req: any, res: Response)=>{
@@ -226,7 +183,7 @@ ejercicioRoutes.post('/uploads', [verificaToken], async (req: any, res: Response
 });
 
 // Servicio para subir la cover
-ejercicioRoutes.post('/upload-cover', async (req: any, res: Response)=>{
+ejercicioRoutes.post('/upload-cover',verificaToken, async (req: any, res: Response)=>{
     fileSystem.vaciarCoverTemp();
     if(!req.files){
         return res.status(400).json({

@@ -66,7 +66,6 @@ export default class FileSystem{
     private crearCarpetaUsuario(userId: string){
         const pathUser = path.resolve(__dirname, '../uploads/',userId);
         const pathUserTemp = pathUser + '/temp';
-        //console.log(pathUser);
         const existe = fs.existsSync(pathUser);
         if(!existe){
             fs.mkdirSync(pathUser);
@@ -96,7 +95,10 @@ export default class FileSystem{
     
     vaciarCoverTemp(){
         const pathTemp = path.resolve(__dirname,'../uploads/cover/temp');
-        fs.rmSync(pathTemp, {recursive: true});
+        const existe = fs.existsSync(pathTemp);
+        if(existe){
+            fs.rmSync(pathTemp, {recursive: true});
+        }
     }
 
     coverDeTempHaciaEjercicio(){
@@ -145,14 +147,4 @@ export default class FileSystem{
         }
         return pathFoto;
     }
-
-    /**
-     * Como necesita acceder al userId estarían mal porque para ver las imágenes necesita ser el admin. Por lo que habría que cambiar
-     * todo el proceso de imgs para no meterlos en /userId/ sino directamente en una carpeta ejercicios. Tal y como está hecho todo el proceso
-     * de las cover. Entonces los usuarios tendrían acceso a las imágenes de cada ejercicio
-     * 
-    getImgUrl(img: string){
-        const pathFoto = path.resolve(__dirname, '../')
-    }
-     */
 }

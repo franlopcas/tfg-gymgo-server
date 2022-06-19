@@ -20,9 +20,6 @@ const ejercicioSchema = new Schema({
         type: String,
         required: [true, 'La imagen es necesaria']
     },
-    imgs:[{
-        type: String
-    }],
     tipo:{
         type: String,
         required: [true, 'El tipo es necesario']
@@ -40,7 +37,6 @@ interface IEjercicio extends Document{
 	ejecucion: string;
     recomendacion: string;
     cover: string;
-    imgs: string[];
     tipo: string;
     usuario: string;
 }

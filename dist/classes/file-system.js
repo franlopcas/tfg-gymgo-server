@@ -70,7 +70,6 @@ var FileSystem = /** @class */ (function () {
     FileSystem.prototype.crearCarpetaUsuario = function (userId) {
         var pathUser = path_1.default.resolve(__dirname, '../uploads/', userId);
         var pathUserTemp = pathUser + '/temp';
-        //console.log(pathUser);
         var existe = fs_1.default.existsSync(pathUser);
         if (!existe) {
             fs_1.default.mkdirSync(pathUser);
@@ -95,7 +94,10 @@ var FileSystem = /** @class */ (function () {
     };
     FileSystem.prototype.vaciarCoverTemp = function () {
         var pathTemp = path_1.default.resolve(__dirname, '../uploads/cover/temp');
-        fs_1.default.rmSync(pathTemp, { recursive: true });
+        var existe = fs_1.default.existsSync(pathTemp);
+        if (existe) {
+            fs_1.default.rmSync(pathTemp, { recursive: true });
+        }
     };
     FileSystem.prototype.coverDeTempHaciaEjercicio = function () {
         var pathTemp = path_1.default.resolve(__dirname, '../uploads/cover/temp');

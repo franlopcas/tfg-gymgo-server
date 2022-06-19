@@ -43,7 +43,6 @@ var tablaRoutes = express_1.Router();
 // Crear tabla
 tablaRoutes.post('/new', [autentication_1.verificaToken], function (req, res) {
     var tabla = req.body;
-    //tabla.usuario = req.usuario._id;
     tabla_model_1.Tabla.create(tabla).then(function (tablaDB) {
         res.json({
             ok: true,
@@ -112,27 +111,6 @@ tablaRoutes.get('/ver-rutinas', [autentication_1.verificaToken], function (req, 
         }
     });
 }); });
-/**
-// Ver tablas paginadas ( Tablas creadas por el usuario )
-tablaRoutes.get('/', [verificaToken], async (req: any, res: Response)=>{
-    //const userId = req.body.usuario;  // Id del usuario que recibimos por el body
-    const userId = req.usuario._id;
-    
-    let pagina = Number(req.query.pagina) || 1;
-    let skip = pagina - 1;
-    skip = skip * 10;
-
-    const tablas = await Tabla.find({'usuario': userId})
-                              .sort({_id: -1})
-                              .skip(skip)
-                              .limit(10)
-                              .exec();
-    res.json({
-        ok: true,
-        tablas
-    })
-});
-*/
 // Ver tablas sin paginar
 tablaRoutes.get('/', [autentication_1.verificaToken], function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var userId, tablas;

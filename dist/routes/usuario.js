@@ -9,12 +9,6 @@ var bcrypt_1 = __importDefault(require("bcrypt"));
 var token_1 = __importDefault(require("../classes/token"));
 var autentication_1 = require("../middlewares/autentication");
 var userRoutes = express_1.Router();
-userRoutes.get('/prueba', function (req, res) {
-    res.json({
-        ok: true,
-        mensaje: 'Todo funciona bien'
-    });
-});
 // Login
 userRoutes.post('/login', function (req, res) {
     var body = req.body;
@@ -24,7 +18,7 @@ userRoutes.post('/login', function (req, res) {
         if (!userDB) {
             res.json({
                 ok: false,
-                mensaje: 'Usuario/contraseña no son correctos'
+                mensaje: 'Usuario y/o contraseña no son correctos'
             });
         }
         if (userDB.compararPassword(body.password)) {
@@ -43,7 +37,7 @@ userRoutes.post('/login', function (req, res) {
         else {
             return res.json({
                 ok: false,
-                mensaje: 'Usuario/contraseña no son correctos ****'
+                mensaje: 'Usuario y/o contraseña no son correctos'
             });
         }
     });
@@ -63,27 +57,29 @@ userRoutes.post('/create', function (req, res) {
         if (userDB) {
             return res.json({
                 ok: false,
-                mensaje: 'El correo electrónico ya se encuentra en el sistema'
+                mensaje: 'Usuario y/o contraseña no son correctos'
             });
         }
-    });
-    usuario_model_1.Usuario.create(user).then(function (userDB) {
-        var tokenUser = token_1.default.getJwtToken({
-            _id: userDB._id,
-            nombre: userDB.nombre,
-            email: userDB.email,
-            avatar: userDB.avatar,
-            rol: userDB.rol
-        });
-        res.json({
-            ok: true,
-            token: tokenUser
-        });
-    }).catch(function (err) {
-        res.json({
-            ok: false,
-            err: err
-        });
+        else {
+            usuario_model_1.Usuario.create(user).then(function (userDB) {
+                var tokenUser = token_1.default.getJwtToken({
+                    _id: userDB._id,
+                    nombre: userDB.nombre,
+                    email: userDB.email,
+                    avatar: userDB.avatar,
+                    rol: userDB.rol
+                });
+                res.json({
+                    ok: true,
+                    token: tokenUser
+                });
+            }).catch(function (err) {
+                res.json({
+                    ok: false,
+                    err: err
+                });
+            });
+        }
     });
 });
 // Actualizar usuario
