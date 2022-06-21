@@ -150,38 +150,6 @@ ejercicioRoutes.get('/ver-ejercicio', (req: any, res: Response)=>{
     });
 });
 
-// Servicio para subir imágenes
-ejercicioRoutes.post('/uploads', [verificaToken], async (req: any, res: Response)=>{
-
-    if(!req.files){
-        return res.status(400).json({
-            ok: false,
-            mensaje: 'No se subió ningún archivo'
-        });
-    }
-    const file: FileUpload = req.files.image;
-
-    if(!file){
-        return res.status(400).json({
-            ok: false,
-            mensaje: 'No se subió ninguna imagen'
-        });
-    }
-
-    if(!file.mimetype.includes('image')){
-        return res.status(400).json({
-            ok: false,
-            mensaje: 'Lo que ha subido no es una imagen'
-        });
-    }
-    await fileSystem.guardarImagenTemporal(file, req.usuario._id);
-
-    res.json({
-        ok: true,
-        file
-    });
-});
-
 // Servicio para subir la cover
 ejercicioRoutes.post('/upload-cover',verificaToken, async (req: any, res: Response)=>{
     fileSystem.vaciarCoverTemp();
@@ -221,14 +189,5 @@ ejercicioRoutes.get('/cover/:img', (req: any, res: Response)=>{
     const pathFoto = fileSystem.getCoverUrl(img);
     res.sendFile(pathFoto);
 });
-
-// Ver imagenes
-/*
-ejercicioRoutes.get('/imgs/:img', (req: any, res: Response)=>{
-    const imgs = req.params.imgs;
-    const pathFoto = fileSystem.getImgUrl(imgs);
-    res.sendFile(pathFoto);
-});
- */
 
 export default ejercicioRoutes;

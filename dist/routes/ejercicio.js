@@ -194,42 +194,6 @@ ejercicioRoutes.get('/ver-ejercicio', function (req, res) {
         });
     });
 });
-// Servicio para subir imágenes
-ejercicioRoutes.post('/uploads', [autentication_1.verificaToken], function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var file;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                if (!req.files) {
-                    return [2 /*return*/, res.status(400).json({
-                            ok: false,
-                            mensaje: 'No se subió ningún archivo'
-                        })];
-                }
-                file = req.files.image;
-                if (!file) {
-                    return [2 /*return*/, res.status(400).json({
-                            ok: false,
-                            mensaje: 'No se subió ninguna imagen'
-                        })];
-                }
-                if (!file.mimetype.includes('image')) {
-                    return [2 /*return*/, res.status(400).json({
-                            ok: false,
-                            mensaje: 'Lo que ha subido no es una imagen'
-                        })];
-                }
-                return [4 /*yield*/, fileSystem.guardarImagenTemporal(file, req.usuario._id)];
-            case 1:
-                _a.sent();
-                res.json({
-                    ok: true,
-                    file: file
-                });
-                return [2 /*return*/];
-        }
-    });
-}); });
 // Servicio para subir la cover
 ejercicioRoutes.post('/upload-cover', autentication_1.verificaToken, function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var file;
@@ -273,12 +237,4 @@ ejercicioRoutes.get('/cover/:img', function (req, res) {
     var pathFoto = fileSystem.getCoverUrl(img);
     res.sendFile(pathFoto);
 });
-// Ver imagenes
-/*
-ejercicioRoutes.get('/imgs/:img', (req: any, res: Response)=>{
-    const imgs = req.params.imgs;
-    const pathFoto = fileSystem.getImgUrl(imgs);
-    res.sendFile(pathFoto);
-});
- */
 exports.default = ejercicioRoutes;
