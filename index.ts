@@ -27,7 +27,6 @@ server.app.use(cors({origin: true, credentials: true}));
 
 // Conectar Base de datos
 mongoose.connect('mongodb://localhost:27017/gymgo', (err)=>{
-    
     if(err) throw err;
     console.log('Base de datos ONLINE');
 })
