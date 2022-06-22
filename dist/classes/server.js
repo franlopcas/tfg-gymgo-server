@@ -5,10 +5,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
 var Server = /** @class */ (function () {
+    //public port: number = 3000;
     function Server() {
-        this.port = 3000;
         // Crea una instancia del servidor
         this.app = express_1.default();
+        this.port = process.env.PORT || 3000;
     }
     Server.prototype.start = function (callback) {
         // Hace correr el servidor
